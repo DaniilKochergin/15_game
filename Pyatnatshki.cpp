@@ -156,7 +156,7 @@ std::string Board::to_string() const {
 }
 
 bool Board::is_solvable() const {
-    vector<unsigned> v(length * length);
+    vector<unsigned> v;
     for (size_t i = 0; i < length; ++i) {
         for (size_t j = 0; j < length; ++j) {
             v.push_back(data[i][j]);
@@ -166,7 +166,7 @@ bool Board::is_solvable() const {
     for (size_t i = 0; i < v.size(); ++i) {
         if (v[i] != 0) {
             for (int j = i; j < v.size(); ++j) {
-                if (v[i] < v[j]) {
+                if (v[j]!=0 && v[i] > v[j]) {
                     inv++;
                 }
             }
