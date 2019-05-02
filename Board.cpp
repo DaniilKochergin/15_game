@@ -3,7 +3,7 @@
 // Created by Danil on 01.05.2019.
 //
 
-#include "Pyatnatshki.h"
+#include "Board.h"
 
 Board::Board() {
     length = 0;
@@ -20,10 +20,16 @@ Board::Board(size_t length) {
     for (size_t i = 0; i < length * length; ++i) {
         data[i / length][i % length] = v[i];
         if (v[i] == 0) {
-            empty = make_pair(i / length, i % length);
+            zero = make_pair(i / length, i % length);
         }
     }
-};
+}
+
+Board::Board(Board const &a) {
+    data = a.data;
+    length = a.length;
+    zero = a.zero;
+}
 
 std::pair<size_t, size_t> Board::find_zero() const {
     int x = 0, y = 0;
@@ -41,27 +47,27 @@ std::pair<size_t, size_t> Board::find_zero() const {
 Board::Board(vector<vector<unsigned>> &&v) {
     std::swap(data, v);
     length = data.size();
-    empty = find_zero();
+    zero = find_zero();
 
 }
 
 Board::Board(vector<vector<unsigned>> const &v) {
     data = v;
     length = v.size();
-    empty = find_zero();
+    zero = find_zero();
 }
 
 Board &Board::operator=(Board const &a) {
     data = a.data;
     length = a.size();
-    empty = a.empty;
+    zero = a.zero;
     return *this;
 }
 
 void Board::swap(Board &a) {
     std::swap(data, a.data);
     std::swap(length, a.length);
-    std::swap(empty, a.empty);
+    std::swap(zero, a.zero);
 }
 
 Board &Board::operator=(Board &&a) noexcept {
@@ -84,7 +90,7 @@ unsigned Board::hamming() const {
 }
 
 bool Board::is_goal() const {
-    if (empty.first == empty.second && empty.first == length - 1) {
+    if (zero.first == zero.second && zero.first == length - 1) {
         for (size_t i = 0; i < length * length - 1; ++i) {
             if (i + 1 != data[i / length][i % length]) return false;
         }
@@ -116,7 +122,7 @@ bool operator!=(Board const &a, Board const &b) {
     return !(a == b);
 }
 
-vector<unsigned> Board::operator[](size_t i) {
+vector<unsigned> &Board::operator[](size_t i) {
     return data[i];
 }
 
@@ -165,15 +171,28 @@ bool Board::is_solvable() const {
     unsigned inv = 0;
     for (size_t i = 0; i < v.size(); ++i) {
         if (v[i] != 0) {
-            for (int j = i; j < v.size(); ++j) {
-                if (v[j]!=0 && v[i] > v[j]) {
+            for (int j = 0; j < i; ++j) {
+                if (v[j] > v[i]) {
                     inv++;
                 }
             }
         }
     }
-    inv += empty.first + 1;
+    inv += zero.first + 1;
     return !(inv & 1u);
 }
+
+bool operator<(Board const &a, Board const &b) {
+    return a.length < b.length;
+}
+
+std::pair<size_t, size_t> Board::get_zero() const {
+    return zero;
+}
+
+bool Board::is_cords_in_field(int x, int y) const {
+    return x < length && y < length;
+}
+
 
 

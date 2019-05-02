@@ -1,23 +1,21 @@
 #include <iostream>
-#include "Pyatnatshki.h"
+#include "Board.h"
+#include "Solver.h"
 
 using namespace std;
 
 int main() {
     int n;
     cin >> n;
-    vector<vector<unsigned >> v(n, vector<unsigned>(n));
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            v[i][j] = i*n + j+1;
-        }
+    std::vector<vector<unsigned>> z = {{2, 6,  3,  4},
+                                       {1, 7,  11, 8},
+                                       {5, 10, 0,  12},
+                                       {9, 13, 14, 15}};
+    Board a(n);
+    Solver s(a);
+    cout << s.data.size() << endl;
+    for (size_t i = 0; i < s.data.size(); ++i) {
+        cout << s.data[i] << endl;
     }
-    swap(v[n-1][n-2], v[n-1][n-3]);
-    v[n-1][n-1] = 0;
-    Board a(v);
-    // vector<vector<unsigned>> v(n,vector<unsigned > (n));
-
-    cout << a << endl;
-    cout<<a.is_solvable()<<endl;
     return 0;
 }

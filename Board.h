@@ -22,6 +22,8 @@ struct Board {
 
     explicit Board(vector<vector<unsigned>> &&v);
 
+    Board(Board const &a);
+
     Board &operator=(Board const &a);
 
     void swap(Board &a);
@@ -40,7 +42,9 @@ struct Board {
 
     friend bool operator!=(Board const &a, Board const &b);
 
-    vector<unsigned> operator[](size_t i);
+    friend bool operator<(Board const &a, Board const &b);
+
+    vector<unsigned> &operator[](size_t i);
 
     vector<unsigned> const &operator[](size_t i) const;
 
@@ -49,15 +53,26 @@ struct Board {
     std::string to_string() const;
 
     bool is_solvable() const;
+
+    std::pair<size_t, size_t> get_zero() const;
+
+    bool is_cords_in_field(int x, int y) const;
+
+    void set_zero(int x, int y) {
+        zero.first = x;
+        zero.second = y;
+    }
+
 private:
     size_t length;
     vector<vector<unsigned>> data;
-    std::pair<size_t, size_t> empty;
-    vector<unsigned> correct;
+    std::pair<size_t, size_t> zero;
 
     std::string int_to_string(int a) const;
 
     std::pair<size_t, size_t> find_zero() const;
+
+
 };
 
 #define UNTITLED8_PYATNATSHKI_H
