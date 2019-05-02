@@ -13,6 +13,41 @@
 using std::vector;
 
 struct Solver {
+    struct Iterator {
+        explicit Iterator(Board *a);
+
+        Board &operator+(size_t n) {
+            return *(cur + n);
+        }
+
+        Board &operator-(size_t n) {
+            return *(cur - n);
+        }
+
+        Board &operator++(int);
+
+        Board &operator--(int);
+
+        Board &operator++();
+
+        Board &operator--();
+
+        bool operator==(Iterator const &it);
+
+        bool operator!=(Iterator const &it);
+
+        Board &operator*();
+
+    private:
+        Board *cur;
+    };
+
+    ~Solver() = default;
+
+    Iterator begin();
+
+    Iterator end();
+
     Solver() = default;
 
     explicit Solver(Board const &a);
@@ -27,6 +62,7 @@ struct Solver {
 
     void swap(Solver &a);
 
+private:
     vector<Board> data;
     Board start;
     vector<std::pair<int, int>> transitions = {{0,  1},

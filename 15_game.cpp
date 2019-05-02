@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "Solver.h"
+#include "15_game.h"
 
 Solver::Solver(Board const &a) {
     if (!a.is_solvable()) {
@@ -47,13 +47,13 @@ void Solver::solve() {
             return;
         }
         vector<Board> next_steps = get_next_steps(v);
-        for (size_t i = 0; i < next_steps.size(); ++i) {
-            auto it = vertex.find(next_steps[i]);
-            size_t d = next_steps[i].manhattan() + next_steps[i].hamming();
+        for (auto &next_step : next_steps) {
+            auto it = vertex.find(next_step);
+            size_t d = next_step.manhattan() + next_step.hamming();
             if ((it != vertex.end() && (it->second > sum + d)) || it == vertex.end()) {
-                q.push(make_pair(sum + d, next_steps[i]));
+                q.push(make_pair(sum + d, next_step));
                 vertex[v] = sum;
-                parent[next_steps[i]] = v;
+                parent[next_step] = v;
             }
         }
     }
@@ -70,9 +70,9 @@ bool Solver::is_goal(Board const &a) const {
 vector<Board> Solver::get_next_steps(Board const &a) const {
     std::pair<int, int> zero = a.get_zero();
     vector<Board> next_steps;
-    for (size_t i = 0; i < transitions.size(); ++i) {
-        int x = zero.first + transitions[i].first;
-        int y = zero.second + transitions[i].second;
+    for (const auto &transition : transitions) {
+        int x = zero.first + transition.first;
+        int y = zero.second + transition.second;
         if (a.is_cords_in_field(x, y)) {
             Board b = a;
             std::swap(b[zero.first][zero.second], b[x][y]);
@@ -86,10 +86,19 @@ vector<Board> Solver::get_next_steps(Board const &a) const {
 void Solver::answer_recovery(Board const &v) {
     data.push_back(v);
     if (start == v) {
+        reverse(data.begin(), data.end());
         return;
     }
 
     answer_recovery(parent[v]);
+}
+
+Solver::Iterator Solver::begin() {
+    return Iterator(&data[0]);
+}
+
+Solver::Iterator Solver::end() {
+    return Iterator(&data[data.size()]);
 }
 
 size_t Solver::VertexSetHashFunction::operator()(Board const &a) const {
@@ -116,5 +125,37 @@ bool Solver::SetEqual::operator()(Board const &a, Board const &b) const {
         return true;
     }
     return false;
+}
+
+Solver::Iterator::Iterator(Board *a) {
+    cur = a;
+}
+
+Board &Solver::Iterator::operator--(int) {
+    return *cur--;
+}
+
+Board &Solver::Iterator::operator++(int) {
+    return *cur++;
+}
+
+Board &Solver::Iterator::operator++() {
+    return *++cur;
+}
+
+Board &Solver::Iterator::operator--() {
+    return *--cur;
+}
+
+bool Solver::Iterator::operator==(const Solver::Iterator &it) {
+    return cur == it.cur;
+}
+
+bool Solver::Iterator::operator!=(const Solver::Iterator &it) {
+    return cur != it.cur;
+}
+
+Board &Solver::Iterator::operator*() {
+    return *cur;
 }
 

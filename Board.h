@@ -24,6 +24,8 @@ struct Board {
 
     Board(Board const &a);
 
+    ~Board() = default;
+
     Board &operator=(Board const &a);
 
     void swap(Board &a);

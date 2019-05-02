@@ -1,6 +1,5 @@
 #include <iostream>
-#include "Board.h"
-#include "Solver.h"
+#include "15_game.h"
 
 using namespace std;
 
@@ -13,9 +12,8 @@ int main() {
                                        {9, 13, 14, 15}};
     Board a(n);
     Solver s(a);
-    cout << s.data.size() << endl;
-    for (size_t i = 0; i < s.data.size(); ++i) {
-        cout << s.data[i] << endl;
+    for (auto &it : s) {
+        cout << it << endl;
     }
     return 0;
 }

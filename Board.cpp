@@ -25,6 +25,7 @@ Board::Board(size_t length) {
     }
 }
 
+
 Board::Board(Board const &a) {
     data = a.data;
     length = a.length;
@@ -193,6 +194,3 @@ std::pair<size_t, size_t> Board::get_zero() const {
 bool Board::is_cords_in_field(int x, int y) const {
     return x < length && y < length;
 }
-
-
-
